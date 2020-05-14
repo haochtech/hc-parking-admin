@@ -1,0 +1,90 @@
+<style>
+    body{line-height: 1.6}
+    .add {
+         background-image: url('{MODULE_URL}/template/static/new/images/icon-home/me-20.png');
+        background-size: 3rem;
+        width: 3rem;
+        height: 3rem;
+        display: block;
+        margin-top: -1.25rem;
+        position: relative;
+        z-index: 9999;
+        background-repeat: no-repeat;
+        box-shadow: 0 3px 30px rgba(225,44,32,1);
+        border-radius: 100%;
+    }
+    .iconfont{
+        display: block;
+        font-size: 1.5rem;
+    }
+    #carLicenseBox{
+        width: 100%;
+    }
+</style>
+<div class="tab-bar tab-bottom">
+    <a class="tab-button {if $_GPC['do']=='index'}active{else}cached{/if}" href="{php echo $this->createMobileUrl('index')}">
+        <i class="iconfont icon-zhufang" ></i>
+        <span class="tab-button-txt">首页</span>
+    </a>
+    <a class="tab-button {if $_GPC['do']=='myqrcodelist'}active{else}cached{/if}" href="{php echo $this->createMobileUrl('myqrcodelist')}">
+        <i class="iconfont icon-fukuanma" ></i>
+        <span class="tab-button-txt">挪车码</span>
+
+    </a>
+    <a  class="tab-button" onclick="add_car();">
+        <i class=" icon add" ></i>
+        <span class="tab-button-txt" style="position: relative;bottom: -.6rem">添加车辆</span>
+
+
+    </a>
+
+    <a class="tab-button {if $_GPC['do']=='orderlist'}active{else}cached{/if}" href="{php echo $this->createMobileUrl('orderlist')}">
+    <i class="iconfont icon-shuji" ></i>
+    <span class="tab-button-txt">订单</span>
+</a>
+<a class="tab-button {if $_GPC['do']=='zengzhi'}active{else}cached{/if}" href="{php echo $this->createMobileUrl('zengzhi')}">
+        <i class="iconfont icon-qitashouru" ></i>
+        <span class="tab-button-txt">增值服务</span>
+    </a>
+</div>
+{php $web_setting = pdo_get(table.'setting',array('uniacid'=>uniacid));}
+{php $account_api = WeAccount::create();$fs = $account_api->fansQueryInfo(openid);}
+<script>
+    
+    function add_car() {
+        layer.open({
+            content: '请选择绑定方式'
+            ,btn: ['在线生成','购买空码 -- 可直接张贴在车内']
+            ,skin: 'footer'
+            ,yes: function(index){
+                {if $web_setting['car_set']=='1'} {if $fs['subscribe']=='1'}
+                window.location.href="{php echo $this->createMobileUrl('addcar')}";
+                {else}
+                layer.open({
+                    content: '你需要关注公众号后才可以添加'
+                    ,skin: 'msg'
+                    ,time: 1 //2秒后自动关闭
+                    ,end:function () {
+                        layer.open({
+                            content: '<img width="100%" src="{php echo $_W[attachurl];}{php echo $web_setting['img']}"/><br>长按二维码关注'
+                            ,anim:'up'
+                            ,skin: 'centen',
+                        })
+                        ref = setInterval(function(){
+                            $.post('{php echo $this->createMobileUrl('guanzhu')}',function (data) {
+                                if(data.subscribe=='1'){
+                                    window.location.reload();
+                                }
+                            },'json');
+                        },3000);
+                    }
+                });
+                {/if}
+                {else}window.location.href="{php echo $this->createMobileUrl('addcar')}";
+                {/if}
+            },no: function(index){
+                window.location.href="{php echo $this->createMobileUrl('shop')}";
+            }
+        });
+    }
+</script>

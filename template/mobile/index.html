@@ -1,0 +1,111 @@
+{template 'newheader'}
+<div class="scroll-content" style="
+    padding-bottom: 7rem;
+">
+    <div class="">
+        <div class="my-info">
+            <div class="my-info-background"></div>
+            <img class="my-avatar" style="margin: -50px 0 0 -40px" src="{$_W['fans']['headimgurl']}">
+            <span class="my-vip" >{$_W['fans']['nickname']}</span>
+        </div>
+        <div class="devider b-line"></div>
+        <!-- 个人中心 begin-->
+        <div>
+            <div class="aui-list-cells">
+                <a  class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="{MODULE_URL}/template/static/new/images/icon-home/me-15.png"></div>
+                    <div class="aui-list-cell-cn">微信通知</div>
+                    <input type="checkbox" class="aui-switch aui-switch-success aui-pull-right"  {if $fans_info['subscribe']=='1'}
+                    {if $user_setting['wx_set']=='1'}
+                    checked onclick="nophone_click('wx_set','0')"
+                    {else}
+                    onclick="nophone_click('wx_set','1')"
+                    {/if}
+                    {else}
+                    id="nosubscribe"
+                    {/if}>
+                </a>
+                <a class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="{MODULE_URL}/template/static/new/images/icon-home/me-16.png"></div>
+                    <div class="aui-list-cell-cn">电话通知</div>
+                    <input type="checkbox" class="aui-switch aui-switch-success aui-pull-right" {if $user_setting['phone_set']=='1'}
+                    checked onclick="nophone_click('phone_set','0')"
+                    {else}onclick="nophone_click('phone_set','1')"
+                    {/if}>
+                </a>
+                <a href="{php echo $this->createMobileUrl('myqrcodelist')}" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="{MODULE_URL}/template/static/new/images/icon-home/me-17.png"></div>
+                    <div class="aui-list-cell-cn">我的挪车码</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                {if $u_set['fw_set']=='1'}
+                <div class="devider b-line"></div>
+                <a href="{php echo $this->createMobileUrl('myteam')}" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="{MODULE_URL}/template/static/new/images/icon-home/me-18.png"></div>
+                    <div class="aui-list-cell-cn">代理中心</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                <div class="devider b-line"></div>
+                <a href="{php echo $this->createMobileUrl('u_setting')}" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="{MODULE_URL}/template/static/new/images/icon-home/me-19.png"></div>
+                    <div class="aui-list-cell-cn">账号设置</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                {/if}
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{template 'footer'}
+<script class="demo-script">
+
+    $('#nosubscribe').click(function () {
+        layer.open({
+            content: '你需要关注公众号后才可以开启通知'
+            ,skin: 'msg'
+            ,time: 1 //2秒后自动关闭
+            ,end:function () {
+                layer.open({
+                    content: '<img width="100%" src="{php echo $_W[attachurl];}{$setting['img']}"/><br>长按二维码关注'
+                    ,anim:'up'
+                    ,skin: 'centen',
+                })
+            }
+        });
+        $('#nosubscribe').prop("checked",false);
+        ref = setInterval(function(){
+            $.post('{php echo $this->createMobileUrl('guanzhu')}',function (data) {
+                if(data.subscribe=='1'){
+                    window.location.reload();
+                }
+            },'json');
+        },3000);
+    });
+    function nophone_click (action,value) {
+        $.get("{php echo $this->createMobileUrl('user_setting')}",{'action':action,'value':value},function (data) {
+            if(data.errno=='1'){
+                layer.open({
+                    content: '操作成功'
+                    ,skin: 'msg'
+                    ,time: 1 //2秒后自动关闭
+                    ,end:function () {
+                        window.location.reload();
+                    }
+                });
+            }else if(data.errno=='0'){
+                layer.open({
+                    content: data.msg
+                    ,skin: 'msg'
+                    ,time: 1 //2秒后自动关闭
+                    ,end:function () {
+                        window.location.reload();
+                    }
+                });
+            }
+        },'json')
+    }
+</script>
+</body>
+</html>

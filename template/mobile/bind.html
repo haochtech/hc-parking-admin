@@ -1,0 +1,223 @@
+{template 'newheader'}
+<link rel="stylesheet" href="{MODULE_URL}/template/static/addcar/static/css/index.css">
+<div id="id_keyboard_province" style="display:none;bottom: 60px">
+</div>
+<div id="wrap">
+    <div class="banner"><img src="{MODULE_URL}/template/static/addcar/static/picture/banner.jpg"/></div>
+    <div id="fromBox" class="fromBox">
+
+        <div class="from">
+            <div class="clearfix">
+                <button  class="btn2" id="id_province"  onclick="provinceSelect();" style="float: left;width: 29%;">京</button>
+                <input type="text" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');value=value.toUpperCase()" maxlength="7" type="text" id="car" placeholder="请输入车牌号码" style="float: right;width: 69%;">
+            </div>
+            <input onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" type="tel" maxlength=="11" id="mobile" placeholder="输入手机号" style="width: 100%">
+            {if $web_setting['sms_set']=='1'}
+            <div class="clearfix">
+                <input type="text" id="smscode" placeholder="填写验证码" style="width:49%">
+                <button id="btn-getcode" class="btn2"style="width:50%">获取验证码</button>
+            </div>
+            <div class="sorrytext"></div>
+            {/if}
+        </div>
+        <div class="aui-btn-list">
+            <a href="javascript:;" style="position: unset" class="btn aui-aui-btn" onclick="f();">绑定车辆</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //获取验证码
+    var waitCode=60;
+    function time(o) {
+        if (waitCode == 0) {
+            o.removeAttr("disabled");
+            o.text("获取验证码");
+            waitCode = 60;
+        } else {
+            o.attr("disabled","");
+            o.text("重新发送(" + waitCode + ")");
+            waitCode--;
+            setTimeout(function() {
+                time(o)
+            },1000);
+        }
+    }
+    $("#btn-getcode").on('click', function(){
+        var tel = $("#mobile").val();
+        if (!(/^(0|86|17951)?(13[0-9]|15[012356789]|17[35678]|18[0-9]|14[57]|19[0-9]|16[0-9])[0-9]{8}$/.test(tel)))  {
+            layer.open({
+                content: '手机号填写的格式不对，请正确填写'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        }else{
+            $.post("{php echo $this->createMobileUrl('getcode')}",{tel:tel},function (data) {
+                if(data.code=='000000'){
+                    layer.open({
+                        content: '验证码已成功发送至你手机'
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+
+                }else{
+                    layer.open({
+                        content: "发送失败：错误代码【"+data.code+"】错误信息【"+data.msg+"】"
+                        ,skin: 'msg'
+                        ,time: 5 //2秒后自动关闭
+                    });
+                }
+
+            },'json')
+            time($(this));
+        }
+    });
+
+</script>
+<script type="text/javascript">
+    function nosubscribe () {
+        layer.open({
+            content: '你需要关注公众号后才可以绑定车辆'
+            ,skin: 'msg'
+            ,time: 1 //2秒后自动关闭
+            ,end:function () {
+                layer.open({
+                    content: '<img width="100%" src="{php echo $_W[attachurl];}{$web_setting['img']}"/><br>长按二维码关注公众号<br>开启微信通知车主功能'
+                    ,anim:'up'
+                    ,skin: 'centen',
+                    end:function () {
+                        window.location.href='{php echo $this->createMobileUrl("myqrcodelist")}';
+                    }
+                })
+            }
+        });
+    };
+    function f() {
+        {if $web_setting['yinhao_set']=='1'}
+        layer.open({
+            content: '<font color="red">本系统为保护您的个人隐私，他人在拨打您的挪车电话时，将以95为开头的14位号码进行呼叫。请您知晓</font>'
+            ,btn: ['我已知晓']
+            ,end: function(index){
+                post();
+                layer.close(index);
+            }
+        });
+        {else}
+        post();
+       {/if}
+        }
+    function post() {
+        var c = $("#id_province").text();
+        var ca = $("#car").val();
+        var car = c+ca;
+        var mobile = $("#mobile").val();
+        //var code = $("#smscode").val();
+        var re=/^[\u4e00-\u9fa5]{1}[A-Z_a-z]{1}[A-Z_0-9_a-z]{5}$/;
+        if(ca==''){
+            layer.open({
+                content: '请输入车牌号'
+                ,btn: '我知道了'
+            })
+        }else if(car.search(re)==-1)
+        {
+            layer.open({
+                content: '输入的车牌号格式不正确'
+                ,btn: '我知道了'
+            })
+        }else if (!(/^(0|86|17951)?(13[0-9]|15[012356789]|17[35678]|18[0-9]|14[57]|19[0-9]|16[0-9])[0-9]{8}$/.test(mobile)))  {
+            layer.open({
+                content: '手机号填写的格式不对，请正确填写'
+                ,btn: '我知道了'
+            })
+        } else {
+            layer.open({
+                type: 2
+                ,content: '绑定中'
+            });
+            $.post('',{car:car,mobile:mobile,action:'bing','sn':"{$res['sn']}"},function (data) {
+                layer.closeAll();
+                if(data.ext=='0'){
+                    layer.open({
+                        content: data.msg
+                        ,btn: '我知道了'
+                    })
+                }else if(data.ext=='1'){
+                    layer.open({
+                        content: '挪车码绑定成功'
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    {if $fans_info['subscribe']!='1'}
+                    nosubscribe();
+                    {else}
+                    window.location.href='{php echo $this->createMobileUrl("myqrcodelist")}';
+                    {/if}
+                    }
+                },'json')
+        }
+    }
+    var provinces = new Array("京","沪","浙","苏","粤","鲁","晋","冀",
+        "豫","川","渝","辽","吉","黑","皖","鄂",
+        "津","贵","云","桂","琼","青","新","藏",
+        "蒙","宁","甘","陕","闽","赣","湘");
+    function provinceSelect(){
+        showProvince();
+    }
+    function showProvince(){
+        var screenWidth=window.screen.width;
+        //求出列数，向下取整
+        var columns = Math.floor((screenWidth - 9)/42);
+        //求出行数，向上取整
+        var rows = Math.ceil(31/columns);
+        //算出按键背景的高度，为每个按键的高度+间隔+上下边距，48为每个按键的高度+距下一个按键的距离
+        var key_bg_height= (rows*48)+16;
+        var x_space = (screenWidth - 9 - 42*columns)/(columns);
+        var start_x = 9+x_space;
+        var start_y = 12;
+        var keyboard_province = document.getElementById("id_keyboard_province");
+        keyboard_province.style.position="absolute";
+        //keyboard_province.style.top= (window.screen.height-key_bg_height)+"px";
+        keyboard_province.style.left=0;
+        keyboard_province.style.backgroundColor="#f2f2f2";
+        keyboard_province.style.width="100%";
+        keyboard_province.style.height=key_bg_height+"px";
+        //keyboard_province.style.display="block";
+        keyboard_province.innerHTML = '';
+
+        for(var i=0;i<rows;i++){
+            for(var j=0;j<columns;j++){
+                var provinceIds = i*columns+j;
+                if(provinceIds<provinces.length){
+                    var x = 9+(j+1)*x_space+j*42;
+                    var y = 12+i*48;
+                    /* var addHtml = addKeyProvince(x,y,provinceIds);
+                    alert(addHtml); */
+                    $("#id_keyboard_province").append(addKeyProvince(x,y,provinceIds));
+                }
+                else{
+                    keyboard_province.style.display="block";
+                    return;
+                }
+            }
+        }
+
+
+    }
+
+    function addKeyProvince(x,y,provinceIds){
+
+        var addHtml = '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:42px;height:48px;">';
+        addHtml += '<button id="id_'+provinceIds+'"  class="btn2" onclick="chooseProvince(this.innerHTML);">'+provinces[provinceIds]+'</button>';
+        addHtml += '</div>';
+        return addHtml;
+    }
+
+
+    function chooseProvince(province){
+        /* alert(province+"======"+provinces[7]); */
+        document.getElementById("id_province").innerHTML=province;
+        $("#id_keyboard_province").hide();
+    }
+</script>
+{template 'footer'}
+</body>
+</html>

@@ -1,0 +1,259 @@
+{template 'web/newheader'}
+{php tpl_fans_form($field, $value = '')}
+<div class="main-panel">
+    <div class="content">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">全局设置</a></li>
+                        <li role="presentation"><a href="#shop" aria-controls="shop" role="tab" data-toggle="tab">商城设置</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">微信通知设置</a></li>
+                        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">阿里云隐私号设置</a></li>
+                        <li role="presentation"><a href="#fenxiang" aria-controls="fenxiang" role="tab" data-toggle="tab">分享设置</a></li>
+                        <li role="presentation"><a href="#duanxin" aria-controls="duanxin" role="tab" data-toggle="tab">短信设置</a></li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <form action="" method="post"  enctype="multipart/form-data">
+                                <div class="form-group form-inline">
+                                    <label  class="col-md-2 col-form-label">平台名称：</label>
+                                    <label class="form-radio-label">
+                                        <div class="col-md-12 input-group">
+                                            <input type="text"class="form-control input-full"  name="data[site_name]" value="{$config['site_name']}" placeholder="请输入平台名称">
+                                        </div>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                    </label>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label class="col-md-2 col-form-label">添加车辆需关注：</label>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="data[car_set]" value="1" {if $config['car_set']=="1"}checked=""{/if}>
+                                        <span class="form-radio-sign">开启</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="data[car_set]" value="0" {if $config['car_set']=="0"}checked=""{/if}>
+                                        <span class="form-radio-sign">关闭</span>
+                                    </label>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label class="col-md-2 col-form-label">联系车主需关注：</label>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="data[user_set]" value="1" {if $config['user_set']=="1"}checked=""{/if}>
+                                        <span class="form-radio-sign">开启</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="data[user_set]" value="0" {if $config['user_set']=="0"}checked=""{/if}>
+                                        <span class="form-radio-sign">关闭</span>
+                                    </label>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="col-md-2">公众号二维码：</label>
+                                    <div class="col-sm-5">
+                                        {php echo tpl_form_field_image("data[img]",$config['img'],$config['img'])}
+                                        <p class="help-block">提示粉丝关注的公众号二维码</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="shop">
+                            <form action="" method="post"  enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label  class="c">挪车码销售价格：</label>
+                                    <input type="text" class="form-control input-full"  name="data[shop]" value="{$config['shop']}" placeholder="线上销售的挪车码价格">
+                                </div>
+                                <div class="form-group">
+                                    <label >挪车码图片：</label>
+                                    {php echo tpl_form_field_image("data[shop_img]",$config['shop_img'],$config['shop_img'])}
+                                    <small id="emailHelp" class="form-text text-muted">线上商城，我的订单展示的挪车码图片</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="profile">
+                            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知挪车模板ID</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[template_id]" class="form-control" value="{$config['template_id']}" placeholder="通知挪车模板ID"  />
+                                        <p class="help-block">所属行业:IT科技 - 互联网|电子商务  模板标题：挪车通知 模板编号：OPENTM414458684</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信通知间隔时间</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[wx_time]" class="form-control" value="{$config['wx_time']}" placeholder="请填写分钟数"  />
+                                        <p class="help-block">挪车人间隔多长时间可以通知车主一次</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信挪车头部</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[wx_header]" class="form-control" value="{$config['wx_header']}" placeholder="自定义您的微信模板消息通知头部"  />
+                                        <p class="help-block">如：亲爱的智能挪车用户，您收到一条挪车请求，请尽快查看车辆，谢谢！</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信挪车尾部</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[wx_footer]" class="form-control" value="{$config['wx_footer']}" placeholder="自定义您的微信模板消息通知尾部"  />
+                                        <p class="help-block">如：感谢您使用智能挪车，谢谢</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div></div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="messages">
+                            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-2 col-form-label">隐号服务：</label>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="data[yinhao_set]" value="1" {if $config['yinhao_set']=="1"}checked=""{/if}>
+                                        <span class="form-radio-sign">开启</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="data[yinhao_set]" value="0" {if $config['yinhao_set']=="0"}checked=""{/if}>
+                                        <span class="form-radio-sign">关闭</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">获取车主电话间隔时间</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[tel_time]" class="form-control" value="{$config['tel_time']}" placeholder="请填写分钟数"  />
+                                        <p class="help-block">挪车人间隔多长时间可以获取车主电话一次</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">AccessKey ID</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[accessKey_id]" class="form-control" value="{$config['accessKey_id']}" placeholder="AccessKey ID"/>
+                                        <p class="help-block">阿里云AccessKey ID <a target="_blank" class="color-default" href="https://usercenter.console.aliyun.com/manage/ak#/manage/ak">获取AK</a></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">Access Key Secret</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[accessKey_secret]" class="form-control" value="{$config['accessKey_secret']}" placeholder="Access Key Secret"/>
+                                        <p class="help-block">阿里云 Access Key Secret <a target="_blank" class="color-default" href="https://usercenter.console.aliyun.com/manage/ak#/manage/ak">获取AK</a></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">号码池key</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[fckey]" class="form-control" value="{$config['fckey']}" placeholder="号码池key"/>
+                                        <p class="help-block">阿里云号码池key 如为低版本号码池请填写 FC123456</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="fenxiang">
+                            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享时展示的标题</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[fenxiang_title]" class="form-control" value="{$config['fenxiang_title']}" placeholder="分享时展示的标题"/>
+                                        <p class="help-block">微信分享到朋友圈或朋友时展示的标题</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享时展示的描述</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[fenxiang_dec]" class="form-control" value="{$config['fenxiang_dec']}" placeholder="分享时展示的描述"/>
+                                        <p class="help-block">微信分享到朋友圈或朋友时展示的描述</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享时展示的图片</label>
+                                    <div class="col-sm-9">
+                                        {php echo tpl_form_field_image("data[fenxiang_img]",$config['fenxiang_img'],$config['fenxiang_img'])}
+                                        <p class="help-block">微信分享到朋友圈或朋友时展示的图片 建议大小 40*40</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="duanxin">
+                            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                                <div class="form-group form-inline">
+                                    <label class="col-md-2 col-form-label">短信验证：</label>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="data[sms_set]" value="1" {if $config['sms_set']=="1"}checked=""{/if}>
+                                        <span class="form-radio-sign">开启</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="data[sms_set]" value="0" {if $config['sms_set']=="0"}checked=""{/if}>
+                                        <span class="form-radio-sign">关闭</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">sid：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[sms_sid]" class="form-control" value="{$config['sms_sid']}" placeholder="请输入云之讯 Account Sid"/>
+                                        <p class="help-block">云之讯 Account Sid  </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">token：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[sms_token]" class="form-control" value="{$config['sms_token']}" placeholder="请输入云之讯 Auth Token"/>
+                                        <p class="help-block">云之讯 Auth Token  </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">appid：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[sms_appid]" class="form-control" value="{$config['sms_appid']}" placeholder="请输入云之讯 AppID"/>
+                                        <p class="help-block">云之讯 AppID  </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">模板id：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="data[sms_templateid]" class="form-control" value="{$config['sms_templateid']}" placeholder="请输入短信模板id"/>
+                                        <p class="help-block">短信模板id</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-offset-3 col-md-offset-2">
+                                        <input type="hidden" name="token" value="{$_W['token']}" />
+                                        <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{template 'web/footer'}

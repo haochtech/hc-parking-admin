@@ -1,0 +1,89 @@
+{template 'newheader'}
+{if $list}
+<div style="padding-bottom: 7rem">
+{loop $list $row}
+<div class="aui-bank-content" style="padding: 0 15px" onclick="setting('{$row[sn]}'{if ! $row['qrcode']},'1'{/if})">
+
+    <div class="aui-bank-cell" style="background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #1c97b3), color-stop(1, rgb(0, 126, 255)));margin-bottom: 0;margin-top: 10px">
+        <div style="padding-right: 20px">
+            <h1 style="color: #ffffff;margin-bottom:1rem">{php echo mb_substr($row['car'],0,1,'utf-8')}</h1>
+        </div>
+        <div class="aui-bank-title" style="padding: 0">
+            <h2 style="font-size: 1.5rem">{php echo mb_substr($row['car'],1,6,'utf-8')}</h2>
+            <p>{if $row['qrcode']}线上生成{else}空码绑定{/if}</p>
+        </div>
+        <div class="aui-bank-title" style="width: 100%" >
+            <i class="iconfont icon-icon_shezhi" style="float: right"></i>
+        </div>
+
+    </div>
+</div>
+{/loop}
+</div>
+{else}
+<div class=" t-line aui-wallet-recharge">
+    <a {if $car_set['car_set']=='1'} {if $fans['subscribe']=='1'}onclick="window.location.href='{php echo $this->createMobileUrl('addcar')}'"{else}id="nosubscribe"{/if}{else}onclick="window.location.href='{php echo $this->createMobileUrl('addcar')}'"{/if}>你还没有车辆请先绑定</a>
+</div>
+{/if}
+{template 'footer'}
+<script>
+    function setting(sn,type){
+        var content = '';
+        var btn = '';
+        if(type=='1'){
+            content = '这个车辆为空码绑定，无线上挪车码';
+            btn = ['', '删除车辆'];
+        }else{
+            content = '请选择您的操作';
+            btn = ['查看挪车码', '删除车辆'];
+        }
+        layer.open({
+            content: content
+            ,btn:btn
+            ,skin: 'footer'
+            ,yes:function () {
+                window.location.href="{php echo $this->createMobileUrl('show')}&sign="+sn;
+            }
+            ,no: function(index){
+                layer.open({
+                    content: '是否删除这个车辆<br><font color="red">如车辆已张贴挪车码，删除后挪车码将失效</font>'
+                    ,btn: ['确认', '取消']
+                    ,yes: function(index){
+                        $.get("{php echo $this->createMobileUrl('del_car')}",{"sn":sn},function (data) {
+                            if(data.ext==0){
+                                layer.open({
+                                    content: '删除成功'
+                                    ,skin: 'msg'
+                                    ,time: 2 //2秒后自动关闭
+                                });
+                                window.location.reload();
+                            }else{
+                                layer.open({
+                                    content: '删除失败'
+                                    ,skin: 'msg'
+                                    ,time: 2 //2秒后自动关闭
+                                });
+                            }
+                        },'json')
+                    }
+                });
+            }
+        });
+    }
+    $('#nosubscribe').click(function () {
+        layer.open({
+            content: '你需要关注公众号后才可以添加'
+            ,skin: 'msg'
+            ,time: 1 //2秒后自动关闭
+            ,end:function () {
+                layer.open({
+                    content: '<img width="100%" src="{php echo $_W[attachurl];}{$car_set['img']}"/><br>长按二维码关注<br>关注成功后请刷新本页'
+                    ,anim:'up'
+                    ,skin: 'centen',
+                })
+            }
+        });
+    });
+</script>
+</body>
+</html>
